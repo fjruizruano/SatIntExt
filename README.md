@@ -5,6 +5,8 @@ Analysis of SATellite INTernal and EXTernal Illumina reads
 - Internal read pair: Both members with homology to the same repetitive element. They are supposed to be inside a satDNA array.
 - External read pair: One member with homology to a repetitive element and the other one with homology to a different repetitive element. One read is supposed to be inside a satDNA array and the other one is supposed to be outside a satDNA array.
 
+![My image](https://github.com/fjruizruano/SatIntExt/blob/main/internal_external_read_pairs.png)
+
 ### 0. Shuffle reads
 
 FASTA files with the reads should be shuffled. You can use:
