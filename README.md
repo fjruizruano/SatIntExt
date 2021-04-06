@@ -65,50 +65,53 @@ After manual edition of the second column to have the same name for each family 
 # ...
 ```
 
-### 2a. Remove hits with asterisk (*) from the RepeatMasker OUT file to avoid duplicated hits.
+### 2. Extract annotated reads by RepeatMasker
+
+Remove hits with asterisk (*) from the RepeatMasker OUT file to avoid duplicated hits
+
 ```
 $ grep -v "*" species.out.fam > species.out.fam.noasterisk
 ```
 
-### 2b. Extract and annotate reads, then count occurrences
+Extract and annotate reads, then count occurrences
 ```
 $ rm_getseq_annot.py species.fa species.out.fam.noasterisk 1
 ```
 1 means minimum length of 1 nt.
-This step can last few minutes
+This step can last few minutes.
 Output: >OdeSat01A-287_ID:ILLUMINA:READ/1
 
 ```
 $ rm_count_matches_monomers.py species.out.fam.noasterisk.fas MinimumLength
 ```
-counts number of matching nucleotides > n (considered as a complete read, by default 11 nt lower than the read length) 
-output -->
+It counts number of matching nucleotides > n (considered as a complete read, by default 11 nt lower than the read length).
+Columns in the output file:
 * Annotation: Annotation
 * DIM_N: number of complete matches (reads)
 * DIM_MON: sum of nt from complete matches
 * NODIM_N: number of incomplete matches 
 * NODIM_MON: sum of nt from incomplete matches
 
- In a spreadsheet we get the total number of reads with aligning at least 89 nt summing DIM_N and NODIM_N
+In a spreadsheet we get the total number of reads with aligning at least 89 nt summing DIM_N and NODIM_N
 
-### 3. Cluster external reads and annotate them. 
+### 3. Cluster external reads and annotate them
 
-This step is independent of step 2.
+This step is independent of the step 2.
 
-It extracts external reads separately from all annotations and clusterize them
+It extracts external reads separately from all annotations and clusterize them:
 ```
 $ rm_cluster_external.py species.out.fam.noasterisk species.fa pattern.txt
 ```
 
 It needs an annotation file named "lmig_combo_plus_trna_rmod.fasta". You can modify the script to use another file name.
-It lasts some minutes/few hours
-The script breaks if there are no external reads for a family. In that case
-remove the satellite where it stops and run again. It jumps analyzed
-satellites and continue the work.
-annot_summary.txt: Total number of external reads and annotated external reads
-cap3_stats.txt: Assembly of external reads using Cap3
-cdhit_stats.txt: Clustering of external reads using CDHIT
+Please consider that it can last some minutes/few hours.
+The script breaks if there are no external reads for a family. In that case remove the satellite where it stops and run again. It jumps analyzed satellites and continue the work.
+
+Outputs:
+* annot_summary.txt: Total number of external reads and annotated external reads
+* cap3_stats.txt: Assembly of external reads using Cap3
+* cdhit_stats.txt: Clustering of external reads using CDHIT
 
 Open annot_summary.txt in a spreadsheet and add the total number of reads from step 2.
-You can calculate the Tandem Structure Index: TSI = 1-(External/Total)
+You can calculate the Tandem Structure Index: TSI = Internal read pairs/Total read pairs:
 
