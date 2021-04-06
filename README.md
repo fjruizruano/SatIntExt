@@ -2,6 +2,9 @@
 Analysis of SATellite INTernal and EXTernal Illumina reads
 
 ## Protocol to extract internal and external read pairs of a repetitives elements
+
+### Definitions
+
 - Internal read pair: Both members with homology to the same repetitive element. They are supposed to be inside a satDNA array.
 - External read pair: One member with homology to a repetitive element and the other one with homology to a different repetitive element. One read is supposed to be inside a satDNA array and the other one is supposed to be outside a satDNA array.
 
@@ -12,11 +15,6 @@ Analysis of SATellite INTernal and EXTernal Illumina reads
 FASTA files with the reads should be shuffled. You can use:
 ```
 $ shuffleSequences_fasta.pl file_1.fasta file_2.fasta file_12.fasta
-```
-
-An alternative is to use:
-```
-$ rexp_prepare_normaltag.py
 ```
 
 The FASTA file should be like this:
@@ -32,4 +30,85 @@ AAAAAA
 [...]
 ```
 
+### 1. If necessary, join and replace variant names to get only a name per family.
+
+```
+$ ls species*.out > lista_out.txt
+$ rm_join_out.py
+$ mv test.all.out species.out
+$ replace_patterns.py species.out pattern.txt
+```
+
+It you don't have a pattern.txt file from the fasta file with the consensus sequences:
+```
+$ grep ">" references.fasta | sed 's/>//g' | sed 's/#/\t/g' | awk {'print $1 "\t" $1'} > pattern.txt
+```
+
+This is how the first line looks after each command element of the pipe:
+```
+>OdeSat01A-287#Satellite/OdeSat01A-287
+OdeSat01A-287#Satellite/OdeSat01A-287
+OdeSat01A-287    Satellite/OdeSat01A-287
+OdeSat01A-287    OdeSat01A-287
+```
+
+After manual edition of the second column to have the same name for each family in the second column, the pattern.txt file looks like this:
+```
+# OdeSat01A-287   OdeSat01A-287
+# OdeSat02A-204   OdeSat02A-204
+# OdeSat02B-205   OdeSat02A-204
+# OdeSat02C-204   OdeSat02A-204
+# OdeSat02D-204   OdeSat02A-204
+# OdeSat03A-148   OdeSat03A-148
+# OdeSat03B-149   OdeSat03A-148
+# OdeSat04A-181   OdeSat04A-181
+# ...
+```
+
+### 2a. Remove hits with asterisk (*) from the RepeatMasker OUT file to avoid duplicated hits.
+```
+$ grep -v "*" species.out.fam > species.out.fam.noasterisk
+```
+
+### 2b. Extract and annotate reads, then count occurrences
+```
+$ rm_getseq_annot.py species.fa species.out.fam.noasterisk 1
+```
+1 means minimum length of 1 nt.
+This step can last few minutes
+Output: >OdeSat01A-287_ID:ILLUMINA:READ/1
+
+```
+$ rm_count_matches_monomers.py species.out.fam.noasterisk.fas MinimumLength
+```
+counts number of matching nucleotides > n (considered as a complete read, by default 11 nt lower than the read length) 
+output -->
+* Annotation: Annotation
+* DIM_N: number of complete matches (reads)
+* DIM_MON: sum of nt from complete matches
+* NODIM_N: number of incomplete matches 
+* NODIM_MON: sum of nt from incomplete matches
+
+ In a spreadsheet we get the total number of reads with aligning at least 89 nt summing DIM_N and NODIM_N
+
+### 3. Cluster external reads and annotate them. 
+
+This step is independent of step 2.
+
+It extracts external reads separately from all annotations and clusterize them
+```
+$ rm_cluster_external.py species.out.fam.noasterisk species.fa pattern.txt
+```
+
+It needs an annotation file named "lmig_combo_plus_trna_rmod.fasta". You can modify the script to use another file name.
+It lasts some minutes/few hours
+The script breaks if there are no external reads for a family. In that case
+remove the satellite where it stops and run again. It jumps analyzed
+satellites and continue the work.
+annot_summary.txt: Total number of external reads and annotated external reads
+cap3_stats.txt: Assembly of external reads using Cap3
+cdhit_stats.txt: Clustering of external reads using CDHIT
+
+Open annot_summary.txt in a spreadsheet and add the total number of reads from step 2.
+You can calculate the Tandem Structure Index: TSI = 1-(External/Total)
 
