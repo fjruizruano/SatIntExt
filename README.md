@@ -12,7 +12,7 @@ Analysis of SATellite INTernal and EXTernal Illumina reads
 
 ### 0. Shuffle reads
 
-FASTA files with the reads should be shuffled. You can use:
+FASTA files with the reads should be shuffled. You can use a script form the [Velvet assembler](https://github.com/dzerbino/velvet/tree/master/contrib/shuffleSequences_fasta):
 ```
 $ shuffleSequences_fasta.pl file_1.fasta file_2.fasta file_12.fasta
 ```
