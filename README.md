@@ -89,14 +89,33 @@ Columns in the output file:
 * Annotation: Annotation
 * DIM_N: number of complete matches (reads)
 * DIM_MON: sum of nt from complete matches
-* NODIM_N: number of incomplete matches 
+* NODIM_N: number of incomplete matches (reads)
 * NODIM_MON: sum of nt from incomplete matches
 
 In a spreadsheet we get the total number of reads with aligning at least 89 nt summing DIM_N and NODIM_N
 
-### 3. Cluster external reads and annotate them
+### 3. Estimate divpeak and RPS
 
-This step is independent of the step 2.
+Optionally, you can estimate divpeak (divergence of the maximum peak) and RPS (relative peak size).
+
+For this you need to create a input file with the name of the divsum files considering only families of satellites and the number of nucleotides of the library:
+```
+species1.out.fam.noasterisk	1010000000
+species2.out.fam.noasterisk	1010000000
+```
+
+Then, use this text file as input for the script
+```
+$ divsum_stats.py divsum_size.txt
+```
+
+Outputs:
+* results.txt: it contains divpeak and rps
+* toico.txt: it contains the sum of nucleotides
+
+### 4. Cluster external reads and annotate them
+
+This step is independent of the steps 2 and 3.
 
 It extracts external reads separately from all annotations and clusterize them:
 ```
