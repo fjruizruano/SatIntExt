@@ -5,8 +5,8 @@ Analysis of SATellite INTernal and EXTernal Illumina reads
 
 ### Definitions
 
-- Internal or homogeneous read pair: Both members with homology to the same repetitive element. They are supposed to be inside a satDNA array.
-- External or heterogeneous read pair: One member with homology to a repetitive element and the other one with homology to a different repetitive element. One read is supposed to be inside a satDNA array and the other one is supposed to be outside a satDNA array.
+- Internal read pair: Both members with homology to the same repetitive element. They are supposed to be inside a satDNA array.
+- External read pair: One member with homology to a repetitive element and the other one with homology to a different repetitive element. One read is supposed to be inside a satDNA array and the other one is supposed to be outside a satDNA array.
 
 ![My image](https://github.com/fjruizruano/SatIntExt/blob/main/internal_external_read_pairs.png)
 
@@ -117,7 +117,7 @@ Outputs:
 
 ### 4. Cluster external reads and annotate them
 
-This step is independent of the steps 2 and 3, but required cd-hit-est and cap3 installed.
+This step is independent of the steps 2 and 3.
 
 It extracts external reads separately from all annotations and clusterize them:
 ```
