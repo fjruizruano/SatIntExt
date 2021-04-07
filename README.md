@@ -98,6 +98,8 @@ In a spreadsheet we get the total number of reads with aligning at least 89 nt s
 
 Optionally, you can estimate divpeak (divergence of the maximum peak) and RPS (relative peak size).
 
+![Divpeak](https://github.com/fjruizruano/SatIntExt/blob/main/divpeak_github.png)
+
 For this you need to create a input file with the name of the divsum files considering only families of satellites and the number of nucleotides of the library:
 ```
 species1.out.fam.noasterisk	1010000000
